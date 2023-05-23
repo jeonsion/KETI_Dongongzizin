@@ -47,11 +47,6 @@ void loop() {
   if (delta_rotationX > rotationThreshold || delta_rotationY > rotationThreshold || delta_rotationZ > rotationThreshold) {
     Serial.println("Impact detected!"); // 충격 감지 메시지 출력
 
-    // LED 제어
-    digitalWrite(LED_BUILTIN, HIGH); // LED 켜기
-    delay(1000); // 1초 동안 유지
-
-    digitalWrite(LED_BUILTIN, LOW); // LED 끄기
   }
 
   prev_rotationX = rotationX;
