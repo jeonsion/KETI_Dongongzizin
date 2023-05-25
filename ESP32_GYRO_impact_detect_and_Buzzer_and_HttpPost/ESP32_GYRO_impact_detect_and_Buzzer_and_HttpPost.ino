@@ -1,3 +1,12 @@
+// 가속도 및 자이로스코프 센서 값을 읽어옵니다.
+// 현재 회전 변화 값을 이전 값과 비교하여 충격이 감지되었는지 확인합니다.
+// 충격이 감지되면 충격 메시지를 출력하고 부저를 울리며, POST 요청을 보낼 준비를 합니다.
+// 충격 이벤트 발생 후 Wi-Fi 연결이 확인되면 서버로 데이터를 전송합니다.
+// 1분이 경과한 경우, Wi-Fi 연결 상태를 확인하고 "0" 값을 서버로 전송합니다.
+// 회전 값을 업데이트하고, 일정 시간 지연합니다.
+
+//마지막 수정 : 2023.05.26
+
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
@@ -10,7 +19,7 @@ const char* server = "203.253.128.177"; // 모비우스 서버 IP 주소
 const int port = 7579; // 모비우스 서버 포트
 const String cnt = "earthquake";
 const String ae = "KETIDGZ"; // 모비우스에서 사용할 AE 이름
-const String cin = "POSTING from ESP32"; // 전송할 데이터
+const String cin = "emergency"; // 전송할 데이터
 
 Adafruit_MPU6050 mpu;
 
@@ -20,7 +29,8 @@ float rotationThreshold = 1.0; // 회전 변화 임계값 (조정 가능)
 
 const int beepPin = 15; // 부저를 제어하는 핀 번호
 
-
+bool postRequested = false;
+unsigned long postTimestamp = 0;
 
 //부저 제어 함수
 void controlBuzzer(){
@@ -79,7 +89,6 @@ void sendPostRequest(const String& payload) {
   }
 
   http.end(); // Free resources
-
 }
 
 void loop() {
@@ -101,18 +110,18 @@ void loop() {
     Serial.println("Impact detected!"); // 충격 감지 메시지 출력
     controlBuzzer();
 
-    if (WiFi.status() == WL_CONNECTED) { // Check WiFi connection status
-      String payload = "{\"m2m:cin\": {\"con\": \"" + cin + "\"}}"; // 전송할 데이터
-      sendPostRequest(payload);
-    } else {
-      Serial.println("Error in WiFi connection");
-    }
+    postRequested = true; // 충격 발생 후 POST 요청 플래그 설정
+    postTimestamp = millis(); // 현재 시간 기록
+  }
 
-    delay(1000); // Send a request every 10 seconds
+  if (postRequested && WiFi.status() == WL_CONNECTED) { // 충격 발생 후 Wi-Fi 연결 상태 확인
+    String payload = "{\"m2m:cin\": {\"con\": \"" + cin + "\"}}"; // 전송할 데이터
+    sendPostRequest(payload);
+    postRequested = false; // POST 요청 플래그 초기화
   }
 
   // 1분 후에 "0" 값을 POST
-  if (millis() >= 60000) {
+  if (!postRequested && millis() - postTimestamp >= 60000) {
     if (WiFi.status() == WL_CONNECTED) { // Check WiFi connection status
       String payload = "{\"m2m:cin\": {\"con\": \"0\"}}"; // 전송할 데이터
       sendPostRequest(payload);
@@ -120,7 +129,7 @@ void loop() {
       Serial.println("Error in WiFi connection");
     }
 
-    millis(); // Reset the timer
+    postTimestamp = millis(); // Reset the timer
   }
 
   prev_rotationX = rotationX;
@@ -129,4 +138,3 @@ void loop() {
 
   delay(100); // 회전 변화를 측정하는 적절한 간격으로 조정 가능
 }
-
