@@ -8,8 +8,8 @@ const char* ssid = "ubicomp"; // Wi-Fi SSID
 const char* password = "ubicomp407"; // Wi-Fi Password
 const char* server = "203.253.128.177"; // 모비우스 서버 IP 주소
 const int port = 7579; // 모비우스 서버 포트
-const String cnt = "earthquake";
-const String ae = "KETIDGZ"; // 모비우스에서 사용할 AE 이름
+const String cnt = "COMMAND";
+const String ae = "KETIDGZ_earthquake"; // 모비우스에서 사용할 AE 이름
 
 LiquidCrystal_I2C lcd(0x27, 20, 4); // LCD 주소와 크기에 따라 수정
 
