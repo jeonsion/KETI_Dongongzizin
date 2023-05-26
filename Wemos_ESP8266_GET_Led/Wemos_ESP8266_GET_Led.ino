@@ -6,8 +6,8 @@ const char* ssid = "ubicomp"; // Wi-Fi SSID
 const char* password = "ubicomp407"; // Wi-Fi Password
 const char* server = "203.253.128.177"; // 모비우스 서버 IP 주소
 const int port = 7579; // 모비우스 서버 포트
-const String cnt = "earthquake";
-const String ae = "KETIDGZ"; // 모비우스에서 사용할 AE 이름
+const String cnt = "COMMAND";
+const String ae = "KETIDGZ_led"; // 모비우스에서 사용할 AE 이름
 
 const int ledPin = D8; // 발광 LED 핀
 
@@ -54,12 +54,15 @@ void loop() {
       String con = doc["m2m:cin"]["con"].as<String>();
       Serial.println("con: " + con);
 
-      // con 값이 0이 아닐 때 발광 LED 깜빡이기
       if (con != "0") {
-        digitalWrite(ledPin, HIGH);
-        delay(200);
-        digitalWrite(ledPin, LOW);
-        delay(200);
+        // 서버 값이 1일 때 LED 깜빡이기 10초 동안
+        for (int i = 0; i < 50; i++) {
+          digitalWrite(ledPin, HIGH);
+          delay(200);
+          digitalWrite(ledPin, LOW);
+          delay(200);
+        }
+        return; // HTTP GET 요청 종료
       }
     } else {
       Serial.print("HTTP GET failed: ");
