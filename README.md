@@ -123,13 +123,14 @@ Use the latitude and longitude uploaded to the Mobius platform to generate a Kak
 
 ![image](https://github.com/jeonsion/KETIDGZ_HW/assets/57317636/6ad3c144-7202-477b-a5e2-53f27b81c3b8)
 
-# Demo video
+### Demo video
 [Youtube]
 https://youtu.be/LH-3efzLHLY
----
-# Link
+### Link
 [Hackster.io]
 https://www.hackster.io/donggongzizin/iot-platform-for-earthquake-evacuation-service-46938f
+
+---
 
 
 ## H/W
