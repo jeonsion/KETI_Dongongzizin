@@ -74,8 +74,10 @@ LEDs are used to indicate seismic warning conditions, and the display displays s
 When the vibration detection sensor is activated, the buzzer connected to the GPIO operates to generate an audible signal indicating the occurrence of vibration.
 
 ## Scrapping
+
 [Youtube]
 https://youtu.be/iF7oXesBXAY
+
 We can utilize real-time earthquake information services provided by meteorological agencies. These websites offer information about the magnitude, location, and maximum intensity of earthquakes that occur. In this case, we are scraping data from the website using a raspberry pi and uploading it to the Mobius platform. If an earthquake occurs in a region other than the last observed earthquake occurrence area, data is uploaded to the Mobius platform.
 
 ### About Simulation
